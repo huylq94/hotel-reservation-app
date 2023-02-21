@@ -11,6 +11,6 @@ public record Reservation(Customer customer, IRoom room, Date checkInDate, Date 
         String roomType = room.getRoomType().equals(RoomType.SINGLE) ? "Single": "Double";
         DateFormat df = new SimpleDateFormat("EEE MMM dd");
         return String.format("Reservation: %s\nRoom: %s - %s bed\nPrice: $%.1f price per night\nCheckin Date: %s\nCheckout Date: %s"
-                , this.customer.getEmail(),this.room.getRoomNumber(), roomType, this.room.getRoomPrice(),df.format(this.checkInDate),df.format(this.checkOutDate));
+                , this.customer.email(),this.room.getRoomNumber(), roomType, this.room.getRoomPrice(),df.format(this.checkInDate),df.format(this.checkOutDate));
     }
 }

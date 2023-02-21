@@ -40,7 +40,7 @@ public class ReservationService {
             customersReservation = new ArrayList<>();
         }
         customersReservation.add(reservation);
-        this.reservations.put(customer.getEmail(), customersReservation);
+        this.reservations.put(customer.email(), customersReservation);
         return reservation;
     }
 
@@ -49,7 +49,7 @@ public class ReservationService {
         for (Collection<Reservation> reservations : reservations.values()) {
             IRoom room = reservations.stream()
                     .filter(reservation -> !isDateAvaibleToReservation(reservation, checkInDate, checkOutDate))
-                    .map(Reservation::getRoom)
+                    .map(Reservation::room)
                     .findFirst()
                     .orElse(null);
             if (Objects.nonNull(room)) {
@@ -63,7 +63,7 @@ public class ReservationService {
 
     public Collection<Reservation> getCustomersReservation(Customer customer) {
 
-        return this.reservations.get(customer.getEmail());
+        return this.reservations.get(customer.email());
     }
 
     public void printAllReservation() {
@@ -86,7 +86,7 @@ public class ReservationService {
     }
 
     private boolean isDateAvaibleToReservation(final Reservation reservation, final Date checkInDate, final Date checkOutDate) {
-        return (checkInDate.before(reservation.getCheckInDate()) && checkInDate.before(reservation.getCheckOutDate()))
-                || (checkInDate.after(reservation.getCheckInDate()) && checkOutDate.after(reservation.getCheckOutDate()));
+        return (checkInDate.before(reservation.checkInDate()) && checkInDate.before(reservation.checkOutDate()))
+                || (checkInDate.after(reservation.checkInDate()) && checkOutDate.after(reservation.checkOutDate()));
     }
 }

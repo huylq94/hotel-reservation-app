@@ -27,7 +27,7 @@ public class CustomerService {
     public Customer getCustomer(String customerEmail) {
 
         return customers.stream()
-                .filter(s -> s.getEmail().equals(customerEmail))
+                .filter(s -> s.email().equals(customerEmail))
                 .findFirst()
                 .orElse(null);
     }
