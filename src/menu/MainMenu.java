@@ -37,20 +37,17 @@ public class MainMenu {
                 case 2 -> getReservation();
                 case 3 -> {
                     //Create account
-//                    System.out.println("Enter Email format: name@domain.com");
-//                    String customerEmail = InputValidation.inputString("^(.+)@(.+).com$", "Please enter email format: name@domain.com");
-//                    while (Objects.nonNull(hotelResource.getCustomer(customerEmail))) {
-//                        System.out.println("Email is exist! Please try again.");
-//                        customerEmail = InputValidation.inputString("^(.+)@(.+).com$", "Please enter email format: name@domain.com");
-//                    }
-//                    System.out.println("First Name");
-//                    String firstName = String.valueOf(sc.nextLine());
-//                    System.out.println("Last Name");
-//                    String lastName = String.valueOf(sc.nextLine());
-//                    hotelResource.createACustomer(customerEmail, firstName, lastName);
-                    hotelResource.createACustomer("cwalklhuy@gmail.com", "Le", "Quang Huy");
-                    hotelResource.createACustomer("lehuy.fptu@gmail.com", "Huy", "Le");
-
+                    System.out.println("Enter Email format: name@domain.com");
+                    String customerEmail = InputValidation.inputString("^(.+)@(.+).com$", "Please enter email format: name@domain.com");
+                    while (Objects.nonNull(hotelResource.getCustomer(customerEmail))) {
+                        System.out.println("Email is exist! Please try again.");
+                        customerEmail = InputValidation.inputString("^(.+)@(.+).com$", "Please enter email format: name@domain.com");
+                    }
+                    System.out.println("First Name");
+                    String firstName = String.valueOf(sc.nextLine());
+                    System.out.println("Last Name");
+                    String lastName = String.valueOf(sc.nextLine());
+                    hotelResource.createACustomer(customerEmail, firstName, lastName);
                 }
                 case 4 -> AdminMenu.execute();
                 case 5 -> System.out.println("Bye bye!!!");
