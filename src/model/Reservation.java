@@ -1,43 +1,16 @@
 package model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Reservation {
-    private Customer customer;
-    private IRoom room;
-    private Date checkInDate;
-    private Date checkOutDate;
-
-    public Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
-        this.customer = customer;
-        this.room = room;
-        this.checkInDate = checkInDate;
-        this.checkOutDate = checkOutDate;
-    }
-
-    public Date getCheckInDate() {
-        return checkInDate;
-    }
-
-    public Date getCheckOutDate() {
-        return checkOutDate;
-    }
-
-    public IRoom getRoom() {
-        return room;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
+public record Reservation(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
 
     @Override
     public String toString() {
-        return "Reservation{" +
-                "customer=" + customer +
-                ", room=" + room +
-                ", checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
-                '}';
+        String roomType = room.getRoomType().equals(RoomType.SINGLE) ? "Single": "Double";
+        DateFormat df = new SimpleDateFormat("EEE MMM dd");
+        return String.format("Reservation: %s\nRoom: %s - %s bed\nPrice: $%.1f price per night\nCheckin Date: %s\nCheckout Date: %s"
+                , this.customer.getEmail(),this.room.getRoomNumber(), roomType, this.room.getRoomPrice(),df.format(this.checkInDate),df.format(this.checkOutDate));
     }
 }

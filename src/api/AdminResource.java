@@ -13,6 +13,10 @@ public class AdminResource {
 
     private static AdminResource instance;
 
+    private CustomerService customerService = CustomerService.getInstance();
+
+    private ReservationService reservationService = ReservationService.getInstance();
+
     public static AdminResource getInstance() {
         if (Objects.isNull(instance)) {
             instance = new AdminResource();
@@ -21,27 +25,27 @@ public class AdminResource {
         return instance;
     }
 
-    public static Customer getCustomer(String email) {
+    public Customer getCustomer(String email) {
 
-        return CustomerService.getInstance().getCustomer(email);
+        return customerService.getCustomer(email);
     }
 
-    public static void addRoom(List<IRoom> rooms) {
+    public void addRoom(List<IRoom> rooms) {
 
-        rooms.forEach(room -> ReservationService.getInstance().addRoom(room));
+        rooms.forEach(room -> reservationService.addRoom(room));
     }
 
-    public static Collection<IRoom> getAllRooms() {
+    public Collection<IRoom> getAllRooms() {
 
-        return ReservationService.getInstance().getRooms();
+        return reservationService.getRooms();
     }
 
-    public static Collection<Customer> getAllCustomers() {
+    public Collection<Customer> getAllCustomers() {
 
-        return CustomerService.getInstance().getAllCustomers();
+        return customerService.getAllCustomers();
     }
 
-    public static void displayAllReservations() {
-        ReservationService.getInstance().printAllReservation();
+    public void displayAllReservations() {
+        reservationService.printAllReservation();
     }
 }

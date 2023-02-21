@@ -1,32 +1,26 @@
 package model;
 
+import java.util.Objects;
+
 public class Room implements IRoom{
 
     private String roomNumber;
 
     private Double price;
 
-    private RoomType enumration;
+    private RoomType enumeration;
 
     public Room() {
     }
 
-    public Room(String roomNumber, Double price, RoomType enumration) {
+    public Room(String roomNumber, Double price, RoomType enumeration) {
         this.roomNumber = roomNumber;
         this.price = price;
-        this.enumration = enumration;
+        this.enumeration = enumeration;
     }
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public void setRoomNumber(String roomNumber) {
-        this.roomNumber = roomNumber;
-    }
-
-    public void setEnumration(RoomType enumration) {
-        this.enumration = enumration;
     }
 
     @Override
@@ -41,17 +35,30 @@ public class Room implements IRoom{
 
     @Override
     public RoomType getRoomType() {
-        return this.enumration;
+        return this.enumeration;
     }
 
     @Override
     public boolean isFree() {
-        return false;
+        return this.price != null && this.price.equals(0.0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return roomNumber.equals(room.roomNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roomNumber);
     }
 
     @Override
     public String toString() {
-        String roomType = enumration.equals(RoomType.SINGLE) ? "Single" : "Double";
+        String roomType = enumeration.equals(RoomType.SINGLE) ? "Single" : "Double";
 
         return String.format("Room Number: %s %s bed Room Price: $%.1f", roomNumber,roomType,price);
     }

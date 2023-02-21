@@ -20,11 +20,11 @@ public class CustomerService {
         return instance;
     }
 
-    public static void addCustomer(String email, String firstName, String lastName) {
+    public void addCustomer(String email, String firstName, String lastName) {
         customers.add(new Customer(firstName,lastName,email));
     }
 
-    public static Customer getCustomer(String customerEmail) {
+    public Customer getCustomer(String customerEmail) {
 
         return customers.stream()
                 .filter(s -> s.getEmail().equals(customerEmail))
@@ -32,7 +32,7 @@ public class CustomerService {
                 .orElse(null);
     }
 
-    public static Collection<Customer> getAllCustomers() {
+    public Collection<Customer> getAllCustomers() {
 
         return customers;
     }

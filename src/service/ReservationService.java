@@ -4,19 +4,16 @@ import model.Customer;
 import model.IRoom;
 import model.Reservation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReservationService {
 
     private static ReservationService instance;
 
-    private static Collection<IRoom> rooms = new ArrayList<>();
+    private final Map<String, Collection<Reservation>> reservations = new HashMap<>();
 
-    private static Collection<Reservation> reservations = new ArrayList<>();
+    private final Map<String, IRoom> rooms = new HashMap<>();
 
     public static ReservationService getInstance() {
         if (Objects.isNull(instance)) {
@@ -26,45 +23,70 @@ public class ReservationService {
         return instance;
     }
 
-    public static void addRoom(IRoom room){
-        rooms.add(room);
+    public void addRoom(IRoom room){
+        this.rooms.put(room.getRoomNumber(), room);
     }
 
-    public static IRoom getARoom(String roomId) {
+    public IRoom getARoom(String roomId) {
 
-        return rooms.stream()
-                .filter(room -> room.getRoomNumber().equals(roomId))
-                .findFirst()
-                .orElse(null);
+        return this.rooms.get(roomId);
     }
 
-    public static Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
+    public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
         Reservation reservation = new Reservation(customer, room, checkInDate, checkOutDate);
-        reservations.add(reservation);
+        Collection<Reservation> customersReservation = getCustomersReservation(customer);
 
+        if (Objects.isNull(customersReservation)) {
+            customersReservation = new ArrayList<>();
+        }
+        customersReservation.add(reservation);
+        this.reservations.put(customer.getEmail(), customersReservation);
         return reservation;
     }
 
-    public static Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-
-        return reservations.stream()
-                .filter(reservation -> reservation.getCheckInDate().compareTo(checkInDate) == 0 && reservation.getCheckOutDate().compareTo(checkOutDate) == 0)
-                .map(Reservation::getRoom)
-                .collect(Collectors.toCollection(ArrayList::new));
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+        final Collection<IRoom> roomIsNotAvaible = new ArrayList<>();
+        for (Collection<Reservation> reservations : reservations.values()) {
+            IRoom room = reservations.stream()
+                    .filter(reservation -> !isDateAvaibleToReservation(reservation, checkInDate, checkOutDate))
+                    .map(Reservation::getRoom)
+                    .findFirst()
+                    .orElse(null);
+            if (Objects.nonNull(room)) {
+                roomIsNotAvaible.add(room);
+            }
+        }
+        return rooms.values().stream()
+                .filter(room -> roomIsNotAvaible.stream().noneMatch(s -> s.equals(room)))
+                .collect(Collectors.toList());
     }
 
-    public static Collection<Reservation> getCustomersReservation(Customer customer) {
+    public Collection<Reservation> getCustomersReservation(Customer customer) {
 
-        return reservations.stream()
-                .filter(reservation -> reservation.getCustomer().equals(customer))
-                .collect(Collectors.toCollection(ArrayList::new));
+        return this.reservations.get(customer.getEmail());
     }
 
-    public static void printAllReservation() {
-        reservations.forEach(System.out::println);
+    public void printAllReservation() {
+        final Collection<Reservation> reservations = new ArrayList<>();
+
+        for (Collection<Reservation> reservation: this.reservations.values()) {
+            reservations.addAll(reservation);
+        }
+
+        if (!reservations.isEmpty()) {
+            reservations.forEach(System.out::println);
+        } else {
+            System.out.println("Not found!!!");
+        }
     }
 
-    public static Collection<IRoom> getRooms() {
-        return rooms;
+    public Collection<IRoom> getRooms() {
+
+        return rooms.values();
+    }
+
+    private boolean isDateAvaibleToReservation(final Reservation reservation, final Date checkInDate, final Date checkOutDate) {
+        return (checkInDate.before(reservation.getCheckInDate()) && checkInDate.before(reservation.getCheckOutDate()))
+                || (checkInDate.after(reservation.getCheckInDate()) && checkOutDate.after(reservation.getCheckOutDate()));
     }
 }
