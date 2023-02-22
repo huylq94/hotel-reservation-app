@@ -77,7 +77,7 @@ public class MainMenu {
         Collection<IRoom> aRoom = hotelResource.findARoom(checkInDate, checkOutDate);
         if (!aRoom.isEmpty()) {
             aRoom.forEach(System.out::println);
-            reserveRoom(checkInDate,checkOutDate);
+            reserveRoom(checkInDate,checkOutDate, aRoom);
         } else {
             //alternative room
             final Date alternativeCheckIn = plusSevenDay(checkInDate);
@@ -89,12 +89,12 @@ public class MainMenu {
             } else {
                 System.out.printf("We've only found room on alter native dates:\nCheckIn Date: %s\nCheckOut Date: %s\n",alternativeCheckIn,alternativeCheckOut);
                 alternativeRoom.forEach(System.out::println);
-                reserveRoom(alternativeCheckIn,alternativeCheckOut);
+                reserveRoom(alternativeCheckIn,alternativeCheckOut, alternativeRoom);
             }
         }
     }
 
-    private static void reserveRoom(Date checkInDate, Date checkOutDate) {
+    private static void reserveRoom(Date checkInDate, Date checkOutDate, Collection<IRoom> rooms) {
         final Scanner sc = new Scanner(System.in);
         System.out.println("Would you like to book a room? y/n");
         final String isChoiceBookRoom = InputValidation.inputString("y|Y|n|N", "Please enter Y/N");
@@ -110,8 +110,8 @@ public class MainMenu {
                 } else {
                     System.out.println("What room number would you like to reserve?");
                     final String roomNumber = String.valueOf(sc.nextLine());
-                    if (Objects.nonNull(hotelResource.getRoom(roomNumber))) {
-                        IRoom room = hotelResource.getRoom(roomNumber);
+                    if (rooms.stream().anyMatch(room -> room.getRoomNumber().equals(roomNumber))) {
+                        IRoom room = rooms.stream().filter(room1 -> room1.getRoomNumber().equals(roomNumber)).findFirst().orElse(null);
                         Reservation reservation = hotelResource.bookARoom(customerEmail, room, checkInDate, checkOutDate);
                         System.out.println("Reservation created successfully!");
                         System.out.println(reservation);

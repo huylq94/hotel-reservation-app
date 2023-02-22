@@ -46,16 +46,15 @@ public class ReservationService {
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
         final Collection<IRoom> roomIsNotAvaible = new ArrayList<>();
-        for (Collection<Reservation> reservations : reservations.values()) {
-            IRoom room = reservations.stream()
-                    .filter(reservation -> !isDateAvaibleToReservation(reservation, checkInDate, checkOutDate))
-                    .map(Reservation::room)
-                    .findFirst()
-                    .orElse(null);
-            if (Objects.nonNull(room)) {
-                roomIsNotAvaible.add(room);
-            }
+        final Collection<Reservation> reservations = new ArrayList<>();
+        for (Collection<Reservation> values : this.reservations.values()) {
+            reservations.addAll(values);
         }
+        reservations.forEach(reservation -> {
+            if (isDateAvailableToReservation(reservation,checkInDate,checkOutDate)) {
+                roomIsNotAvaible.add(reservation.room());
+            }
+        });
         return rooms.values().stream()
                 .filter(room -> roomIsNotAvaible.stream().noneMatch(s -> s.equals(room)))
                 .collect(Collectors.toList());
@@ -85,8 +84,8 @@ public class ReservationService {
         return rooms.values();
     }
 
-    private boolean isDateAvaibleToReservation(final Reservation reservation, final Date checkInDate, final Date checkOutDate) {
-        return (checkInDate.before(reservation.checkInDate()) && checkInDate.before(reservation.checkOutDate()))
-                || (checkInDate.after(reservation.checkInDate()) && checkOutDate.after(reservation.checkOutDate()));
+    private boolean isDateAvailableToReservation(final Reservation reservation, final Date checkInDate, final Date checkOutDate) {
+
+        return checkInDate.before(reservation.checkOutDate()) && checkOutDate.after(reservation.checkInDate());
     }
 }

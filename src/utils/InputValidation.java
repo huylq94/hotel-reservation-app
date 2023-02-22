@@ -10,7 +10,7 @@ public class InputValidation {
 
     private static final String INPUT_NUMBER_DIGIT = "[0-9]+";
 
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String DATE_FORMAT = "MM/dd/yyyy";
 
     public static Integer inputNumber(final String msgErr) {
         final Scanner sc = new Scanner(System.in);
@@ -47,6 +47,7 @@ public class InputValidation {
 
     private static boolean isInvalidParse(String dateStr) {
         final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        dateFormat.setLenient(false);
         try {
             dateFormat.parse(dateStr);
         } catch (ParseException e) {
